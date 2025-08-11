@@ -42,9 +42,17 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
     });
   };
 
+  // Check if we're on a mobile device (screen width < 480px)
+  const isMobile = window.innerWidth < 480;
+  
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: 24 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
+        gap: 12, 
+        marginBottom: 12 
+      }}>
         <div>
           <label style={{ display: 'block', marginBottom: 4, fontSize: '0.9rem' }}>Name *</label>
           <input
@@ -90,7 +98,7 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
             style={{ width: '100%', padding: '8px', borderRadius: 4, border: '1px solid #ddd' }}
           />
         </div>
-        <div style={{ gridColumn: '1 / span 2' }}>
+        <div style={{ gridColumn: isMobile ? 'auto' : '1 / span 2' }}>
           <label style={{ display: 'block', marginBottom: 4, fontSize: '0.9rem' }}>Image URL</label>
           <input
             name="image"
@@ -100,7 +108,7 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
             style={{ width: '100%', padding: '8px', borderRadius: 4, border: '1px solid #ddd' }}
           />
         </div>
-        <div style={{ gridColumn: '1 / span 2' }}>
+        <div style={{ gridColumn: isMobile ? 'auto' : '1 / span 2' }}>
           <label style={{ display: 'block', marginBottom: 4, fontSize: '0.9rem' }}>Description</label>
           <textarea
             name="description"
@@ -121,6 +129,7 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
           borderRadius: 4,
           cursor: 'pointer',
           fontWeight: 600,
+          width: isMobile ? '100%' : 'auto'
         }}
       >
         Add Item

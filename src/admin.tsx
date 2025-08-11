@@ -8,6 +8,8 @@ import EditItemForm from './components/EditItemForm.tsx';
 import EditPartyOptionForm from './components/EditPartyOptionForm.tsx';
 import { Link } from 'react-router-dom';
 import { MenuItem, PartyOrderOption } from './types/menuTypes.ts';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AdminPage() {
   const { 
@@ -21,6 +23,20 @@ export default function AdminPage() {
     updateMenuItem,
     updatePartyOption
   } = useMenu();
+  
+  // Function to explicitly save changes to localStorage
+  const saveChanges = () => {
+    localStorage.setItem('crunchTimeMenuItems', JSON.stringify(menuItems));
+    localStorage.setItem('crunchTimePartyOptions', JSON.stringify(partyOptions));
+    toast.success('Changes saved successfully!', {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
   
   const [activeTab, setActiveTab] = useState<'menu' | 'party'>('menu');
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
@@ -45,9 +61,39 @@ export default function AdminPage() {
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', padding: 16 }}>
-      <header style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <ToastContainer aria-label="Toast Notifications" />
+      <header style={{ 
+        marginBottom: 24, 
+        display: 'flex', 
+        flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+        justifyContent: 'space-between', 
+        alignItems: window.innerWidth < 600 ? 'flex-start' : 'center',
+        gap: window.innerWidth < 600 ? 16 : 0
+      }}>
         <h1 style={{ fontSize: '1.8rem', margin: 0 }}>Crunch Time Admin</h1>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: window.innerWidth < 480 ? 'column' : 'row',
+          gap: 12,
+          width: window.innerWidth < 480 ? '100%' : 'auto'
+        }}>
+          <button
+            onClick={saveChanges}
+            style={{
+              textDecoration: 'none',
+              color: 'white',
+              padding: '8px 16px',
+              border: 'none',
+              borderRadius: 4,
+              fontSize: '0.9rem',
+              background: '#4caf50',
+              cursor: 'pointer',
+              fontWeight: 600,
+              width: window.innerWidth < 480 ? '100%' : 'auto'
+            }}
+          >
+            Save Changes
+          </button>
           <button
             onClick={() => {
               localStorage.removeItem('adminAuthenticated');
@@ -61,7 +107,8 @@ export default function AdminPage() {
               borderRadius: 4,
               fontSize: '0.9rem',
               background: 'transparent',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              width: window.innerWidth < 480 ? '100%' : 'auto'
             }}
           >
             Logout
@@ -74,7 +121,11 @@ export default function AdminPage() {
               padding: '8px 16px',
               border: '1px solid #1976d2',
               borderRadius: 4,
-              fontSize: '0.9rem'
+              fontSize: '0.9rem',
+              display: 'inline-block',
+              textAlign: 'center',
+              width: window.innerWidth < 480 ? '100%' : 'auto',
+              boxSizing: 'border-box'
             }}
           >
             View Customer Menu

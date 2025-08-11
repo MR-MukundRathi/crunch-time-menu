@@ -16,11 +16,15 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onRemove,
   onEdit,
 }) => {
+  // Check if we're on a mobile device (screen width < 480px)
+  const isMobile = window.innerWidth < 480;
+  
   return (
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: isMobile && isAdmin ? 'column' : 'row',
+        alignItems: isMobile && isAdmin ? 'flex-start' : 'center',
         background: item.available ? '#fffde7' : '#f5f5f5',
         borderRadius: 8,
         padding: 12,
@@ -28,36 +32,50 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         opacity: item.available ? 1 : 0.7,
       }}
     >
-      <img
-        src={item.image}
-        alt={item.name}
-        style={{
-          width: 56,
-          height: 56,
-          borderRadius: 8,
-          objectFit: 'cover',
-          marginRight: 16,
-        }}
-      />
-      <div style={{ flex: 1, textAlign: 'left' }}>
-        <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{item.name}</div>
-        {item.description && (
-          <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: 4 }}>
-            {item.description}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        width: isMobile && isAdmin ? '100%' : 'auto',
+        marginBottom: isMobile && isAdmin ? 12 : 0
+      }}>
+        <img
+          src={item.image}
+          alt={item.name}
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 8,
+            objectFit: 'cover',
+            marginRight: 16,
+          }}
+        />
+        <div style={{ flex: 1, textAlign: 'left' }}>
+          <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{item.name}</div>
+          {item.description && (
+            <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: 4 }}>
+              {item.description}
+            </div>
+          )}
+          <div style={{ color: '#888', fontSize: '0.95rem' }}>
+            ₹{item.price} <span style={{ fontSize: '0.9rem' }}>/ {item.unit}</span>
           </div>
-        )}
-        <div style={{ color: '#888', fontSize: '0.95rem' }}>
-          ₹{item.price} <span style={{ fontSize: '0.9rem' }}>/ {item.unit}</span>
+          {!item.available && !isAdmin && (
+            <div style={{ color: '#e53935', fontSize: '0.9rem', fontWeight: 500 }}>
+              Currently Unavailable
+            </div>
+          )}
         </div>
-        {!item.available && !isAdmin && (
-          <div style={{ color: '#e53935', fontSize: '0.9rem', fontWeight: 500 }}>
-            Currently Unavailable
-          </div>
-        )}
       </div>
 
       {isAdmin && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'row' : 'column', 
+          gap: 8,
+          width: isMobile ? '100%' : 'auto',
+          justifyContent: isMobile ? 'space-between' : 'flex-start',
+          marginTop: isMobile ? 8 : 0
+        }}>
           <button
             onClick={() => onToggleAvailability?.(item.id)}
             style={{
@@ -67,9 +85,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               border: 'none',
               borderRadius: 4,
               cursor: 'pointer',
+              flex: isMobile ? 1 : 'auto',
+              marginRight: isMobile ? 4 : 0
             }}
           >
-            {item.available ? 'Mark Unavailable' : 'Mark Available'}
+            {isMobile ? (item.available ? 'Unavailable' : 'Available') : (item.available ? 'Mark Unavailable' : 'Mark Available')}
           </button>
           <button
             onClick={() => onEdit?.(item)}
@@ -80,6 +100,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               border: 'none',
               borderRadius: 4,
               cursor: 'pointer',
+              flex: isMobile ? 1 : 'auto',
+              marginRight: isMobile ? 4 : 0
             }}
           >
             Edit
@@ -93,6 +115,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               border: 'none',
               borderRadius: 4,
               cursor: 'pointer',
+              flex: isMobile ? 1 : 'auto'
             }}
           >
             Remove

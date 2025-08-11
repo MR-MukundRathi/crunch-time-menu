@@ -33,10 +33,18 @@ const EditPartyOptionForm: React.FC<EditPartyOptionFormProps> = ({ option, onUpd
     onUpdate(option.id, editedOption);
   };
 
+  // Check if we're on a mobile device (screen width < 480px)
+  const isMobile = window.innerWidth < 480;
+  
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: 24 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-        <div style={{ gridColumn: '1 / span 2' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
+        gap: 12, 
+        marginBottom: 12 
+      }}>
+        <div style={{ gridColumn: isMobile ? 'auto' : '1 / span 2' }}>
           <label style={{ display: 'block', marginBottom: 4, fontSize: '0.9rem' }}>Name *</label>
           <input
             name="name"
@@ -94,7 +102,7 @@ const EditPartyOptionForm: React.FC<EditPartyOptionFormProps> = ({ option, onUpd
             style={{ width: '100%', padding: '8px', borderRadius: 4, border: '1px solid #ddd' }}
           />
         </div>
-        <div style={{ gridColumn: '1 / span 2' }}>
+        <div style={{ gridColumn: isMobile ? 'auto' : '1 / span 2' }}>
           <label style={{ display: 'block', marginBottom: 4, fontSize: '0.9rem' }}>Description *</label>
           <textarea
             name="description"
@@ -106,7 +114,11 @@ const EditPartyOptionForm: React.FC<EditPartyOptionFormProps> = ({ option, onUpd
           />
         </div>
       </div>
-      <div style={{ display: 'flex', gap: 10 }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: 10 
+      }}>
         <button
           type="submit"
           style={{
@@ -117,6 +129,7 @@ const EditPartyOptionForm: React.FC<EditPartyOptionFormProps> = ({ option, onUpd
             borderRadius: 4,
             cursor: 'pointer',
             fontWeight: 600,
+            marginBottom: isMobile ? 10 : 0
           }}
         >
           Save Changes
