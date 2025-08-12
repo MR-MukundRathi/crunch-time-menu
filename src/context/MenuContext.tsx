@@ -20,13 +20,28 @@ export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Load menu items from localStorage or use initial data
   const [menuItems, setMenuItems] = useState<MenuItem[]>(() => {
     const savedItems = localStorage.getItem('crunchTimeMenuItems');
-    return savedItems ? JSON.parse(savedItems) : initialMenuItems;
+    if (savedItems) {
+      try {
+        return JSON.parse(savedItems);
+      } catch {
+        // Remove corrupted data so the app can recover gracefully
+        localStorage.removeItem('crunchTimeMenuItems');
+      }
+    }
+    return initialMenuItems;
   });
 
   // Load party options from localStorage or use initial data
   const [partyOptions, setPartyOptions] = useState<PartyOrderOption[]>(() => {
     const savedOptions = localStorage.getItem('crunchTimePartyOptions');
-    return savedOptions ? JSON.parse(savedOptions) : initialPartyOptions;
+    if (savedOptions) {
+      try {
+        return JSON.parse(savedOptions);
+      } catch {
+        localStorage.removeItem('crunchTimePartyOptions');
+      }
+    }
+    return initialPartyOptions;
   });
 
   // Save menu items to localStorage whenever they change

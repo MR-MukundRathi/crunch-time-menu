@@ -1,9 +1,13 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import ReactDOMServer from 'react-dom/server';
 import App from './App';
+import { MenuProvider } from './context/MenuContext';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders app header', () => {
+  const html = ReactDOMServer.renderToString(
+    <MenuProvider>
+      <App />
+    </MenuProvider>
+  );
+  expect(html).toMatch(/Crunch Time/i);
 });
