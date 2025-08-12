@@ -14,7 +14,7 @@ A simple menu application for "Crunch Time", a home-based food business operatin
 - React
 - TypeScript
 - React Router
-- Local Storage for data persistence
+- Google Sheets as backend storage
 - Progressive Web App (PWA) capabilities
 
 ## Getting Started
@@ -22,6 +22,7 @@ A simple menu application for "Crunch Time", a home-based food business operatin
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
+- Google service account with access to the `Menu_list` spreadsheet
 
 ### Installation
 1. Clone the repository
@@ -29,13 +30,26 @@ A simple menu application for "Crunch Time", a home-based food business operatin
    ```
    npm install
    ```
-3. Start the development server:
+3. Start the backend server:
+   ```
+   npm run server
+   ```
+4. In a separate terminal, start the frontend development server:
    ```
    npm start
    ```
-4. Open [http://localhost:3000](http://localhost:3000) to view the customer menu
-5. Open [http://localhost:3000/login](http://localhost:3000/login) to access the admin login page
-6. Enter the password: `crunchtime2023` to access the admin panel
+5. Open [http://localhost:3000](http://localhost:3000) to view the customer menu
+6. Open [http://localhost:3000/login](http://localhost:3000/login) to access the admin login page
+7. Enter the password: `crunchtime2023` to access the admin panel
+
+### Environment Variables
+
+The backend expects the following environment variables to be set:
+
+- `GOOGLE_SHEET_ID` – ID of the `Menu_list` spreadsheet
+- `GOOGLE_SERVICE_ACCOUNT` – JSON credentials for a service account with access to Google Sheets
+
+These can be added to a `.env` file or exported before starting the server.
 
 ## Usage
 
@@ -49,7 +63,7 @@ A simple menu application for "Crunch Time", a home-based food business operatin
 - Add, edit, and remove menu items
 - Mark items as available/unavailable
 - Manage party order options
-- All changes are automatically saved to local storage
+- All changes are synced with a Google Sheets backend
 
 ## Deployment
 

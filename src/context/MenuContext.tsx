@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { MenuItem, PartyOrderOption } from '../types/menuTypes.ts';
-import { initialMenuItems, initialPartyOptions } from '../data/menuData.ts';
+import { initialPartyOptions } from '../data/menuData.ts';
 
 interface MenuContextType {
   menuItems: MenuItem[];
@@ -18,18 +18,7 @@ const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
 export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Load menu items from localStorage or use initial data
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(() => {
-    const savedItems = localStorage.getItem('crunchTimeMenuItems');
-    if (savedItems) {
-      try {
-        return JSON.parse(savedItems);
-      } catch {
-        // Remove corrupted data so the app can recover gracefully
-        localStorage.removeItem('crunchTimeMenuItems');
-      }
-    }
-    return initialMenuItems;
-  });
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   // Load party options from localStorage or use initial data
   const [partyOptions, setPartyOptions] = useState<PartyOrderOption[]>(() => {
@@ -44,10 +33,13 @@ export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return initialPartyOptions;
   });
 
-  // Save menu items to localStorage whenever they change
+  // Load menu items from backend
   useEffect(() => {
-    localStorage.setItem('crunchTimeMenuItems', JSON.stringify(menuItems));
-  }, [menuItems]);
+    fetch('/api/menu')
+      .then((res) => res.json())
+      .then((data) => setMenuItems(data))
+      .catch(() => setMenuItems([]));
+  }, []);
 
   // Save party options to localStorage whenever they change
   useEffect(() => {
@@ -55,35 +47,50 @@ export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [partyOptions]);
 
   // Add a new menu item
-  const addMenuItem = (item: Omit<MenuItem, 'id'>) => {
+  const addMenuItem = async (item: Omit<MenuItem, 'id'>) => {
     const newItem: MenuItem = {
       ...item,
-      id: Date.now().toString(), // Generate a unique ID
+      id: Date.now().toString(),
     };
+    await fetch('/api/menu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newItem),
+    });
     setMenuItems([...menuItems, newItem]);
   };
 
   // Update an existing menu item
-  const updateMenuItem = (id: string, item: Partial<MenuItem>) => {
-    setMenuItems(
-      menuItems.map((menuItem) =>
-        menuItem.id === id ? { ...menuItem, ...item } : menuItem
-      )
+  const updateMenuItem = async (id: string, item: Partial<MenuItem>) => {
+    const updated = menuItems.map((menuItem) =>
+      menuItem.id === id ? { ...menuItem, ...item } : menuItem
     );
+    const current = updated.find((m) => m.id === id);
+    await fetch(`/api/menu/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(current),
+    });
+    setMenuItems(updated);
   };
 
   // Remove a menu item
-  const removeMenuItem = (id: string) => {
+  const removeMenuItem = async (id: string) => {
+    await fetch(`/api/menu/${id}`, { method: 'DELETE' });
     setMenuItems(menuItems.filter((item) => item.id !== id));
   };
 
   // Toggle a menu item's availability
-  const toggleItemAvailability = (id: string) => {
-    setMenuItems(
-      menuItems.map((item) =>
-        item.id === id ? { ...item, available: !item.available } : item
-      )
-    );
+  const toggleItemAvailability = async (id: string) => {
+    const item = menuItems.find((m) => m.id === id);
+    if (!item) return;
+    const updated = { ...item, available: !item.available };
+    await fetch(`/api/menu/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    });
+    setMenuItems(menuItems.map((m) => (m.id === id ? updated : m)));
   };
 
   // Add a new party option

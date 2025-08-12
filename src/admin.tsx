@@ -8,8 +8,6 @@ import EditItemForm from './components/EditItemForm.tsx';
 import EditPartyOptionForm from './components/EditPartyOptionForm.tsx';
 import { Link } from 'react-router-dom';
 import { MenuItem, PartyOrderOption } from './types/menuTypes.ts';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function AdminPage() {
   const { 
@@ -23,20 +21,6 @@ export default function AdminPage() {
     updateMenuItem,
     updatePartyOption
   } = useMenu();
-  
-  // Function to explicitly save changes to localStorage
-  const saveChanges = () => {
-    localStorage.setItem('crunchTimeMenuItems', JSON.stringify(menuItems));
-    localStorage.setItem('crunchTimePartyOptions', JSON.stringify(partyOptions));
-    toast.success('Changes saved successfully!', {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  };
   
   const [activeTab, setActiveTab] = useState<'menu' | 'party'>('menu');
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
@@ -61,7 +45,6 @@ export default function AdminPage() {
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', padding: 16 }}>
-      <ToastContainer aria-label="Toast Notifications" />
       <header style={{ 
         marginBottom: 24, 
         display: 'flex', 
@@ -77,23 +60,6 @@ export default function AdminPage() {
           gap: 12,
           width: window.innerWidth < 480 ? '100%' : 'auto'
         }}>
-          <button
-            onClick={saveChanges}
-            style={{
-              textDecoration: 'none',
-              color: 'white',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: 4,
-              fontSize: '0.9rem',
-              background: '#4caf50',
-              cursor: 'pointer',
-              fontWeight: 600,
-              width: window.innerWidth < 480 ? '100%' : 'auto'
-            }}
-          >
-            Save Changes
-          </button>
           <button
             onClick={() => {
               localStorage.removeItem('adminAuthenticated');
