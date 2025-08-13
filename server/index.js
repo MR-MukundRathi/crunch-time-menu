@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
-const SHEET_NAME = 'Curnch Time';
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || 'Crunch Time';
 
 async function getSheet() {
   const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT || '{}');

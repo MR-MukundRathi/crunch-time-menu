@@ -48,6 +48,7 @@ The backend expects the following environment variables to be set:
 
 - `GOOGLE_SHEET_ID` – ID of the `Menu_list` spreadsheet
 - `GOOGLE_SERVICE_ACCOUNT` – JSON credentials for a service account with access to Google Sheets
+- `GOOGLE_SHEET_NAME` – Name of the sheet containing the menu data (defaults to `Crunch Time`)
 
 These can be added to a `.env` file or exported before starting the server.
 
